@@ -231,7 +231,7 @@ public class AggregateExecutor extends QueryExecutor {
   }
 
   @Value
-  private static class ResultWithExpressions {
+  static class ResultWithExpressions {
 
     @Nonnull
     Dataset<Row> dataset;
