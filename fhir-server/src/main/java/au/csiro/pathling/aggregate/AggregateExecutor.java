@@ -107,7 +107,7 @@ public class AggregateExecutor extends QueryExecutor {
     Dataset<Row> groupingsAndFilters = joinExpressionsAndFilters(inputContext, groupings, filters,
         idColumn);
     // Apply filters.
-    groupingsAndFilters = applyFilters(groupingsAndFilters, filters);
+    //groupingsAndFilters = applyFilters(groupingsAndFilters, filters);
 
     // Remove synthetic fields from struct values (such as _fid) before grouping.
     final DatasetWithColumnMap datasetWithNormalizedGroupings = createColumns(
