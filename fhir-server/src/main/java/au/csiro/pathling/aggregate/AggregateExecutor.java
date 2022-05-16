@@ -8,7 +8,6 @@ package au.csiro.pathling.aggregate;
 
 import au.csiro.pathling.Configuration;
 import au.csiro.pathling.QueryExecutor;
-import au.csiro.pathling.QueryHelpers;
 import au.csiro.pathling.QueryHelpers.DatasetWithColumnMap;
 import au.csiro.pathling.fhir.TerminologyServiceFactory;
 import au.csiro.pathling.fhirpath.FhirPath;
@@ -36,7 +35,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static au.csiro.pathling.QueryHelpers.createColumns;
-import static au.csiro.pathling.QueryHelpers.join;
 import static au.csiro.pathling.utilities.Preconditions.checkUserInput;
 
 /**
@@ -122,8 +120,8 @@ public class AggregateExecutor extends QueryExecutor {
         //Dataset<Row> filterDS = applyFilters(filterContext.getInputContext().getDataset(), filters);
 
         // not we need to join this to to input context
-        FhirPath groupingContextPath = filters.isEmpty() ? inputContext : inputContext.adoptDataset(join(
-                applyFilters(filterContext.getInputContext().getDataset(), filters), idColumn, inputContext.getDataset(), idColumn, QueryHelpers.JoinType.RIGHT_OUTER)
+        FhirPath groupingContextPath = filters.isEmpty() ? inputContext : inputContext.adoptDataset(
+                applyFilters(filterContext.getInputContext().getDataset(), filters).cache()
         );
 
         final ParserContext groupingContext = buildParserContext(groupingContextPath,
@@ -138,7 +136,7 @@ public class AggregateExecutor extends QueryExecutor {
 
 
         // Join all filter and grouping expressions together.
-        Dataset<Row> groupingsAndFilters = joinExpressionsAndFilters(inputContext, groupings, Collections.emptyList(),
+        Dataset<Row> groupingsAndFilters = joinExpressionsAndFilters(groupingContextPath, groupings, Collections.emptyList(),
                 idColumn);
         // Apply filters.
         //groupingsAndFilters = applyFilters(groupingsAndFilters, filters);

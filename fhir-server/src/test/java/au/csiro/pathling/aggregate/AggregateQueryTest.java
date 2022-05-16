@@ -694,20 +694,4 @@ class AggregateQueryTest extends AggregateExecutorTest {
         query.getDataset().explain(true);
     }
 
-    @Test
-    void queryWithEmptyNot() {
-        subjectResource = ResourceType.PATIENT;
-        mockResource(subjectResource);
-
-        final AggregateRequest request = new AggregateRequestBuilder(subjectResource)
-                .withAggregation("count()")
-                .withFilter("name.family.empty().not()")
-                .withFilter("gender = 'male'")
-                .build();
-
-        response = executor.execute(request);
-        assertResponse("AggregateQueryTest/queryWithCombineResultInSecondFilter.Parameters.json",
-                response);
-    }
-
 }
