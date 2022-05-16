@@ -686,10 +686,28 @@ class AggregateQueryTest extends AggregateExecutorTest {
         final AggregateRequest request = new AggregateRequestBuilder(subjectResource)
                 .withAggregation("count()")
                 .withGrouping("code.memberOf('" + valueSetUrl + "')")
-                .withFilter("onsetString = 'test'")
+                .withFilter("category.count() > 1")
+                .withFilter("abatementString = 'test'")
                 .build();
 
         AggregateExecutor.ResultWithExpressions query = executor.buildQuery(request);
         query.getDataset().explain(true);
     }
+
+    @Test
+    void queryWithEmptyNot() {
+        subjectResource = ResourceType.PATIENT;
+        mockResource(subjectResource);
+
+        final AggregateRequest request = new AggregateRequestBuilder(subjectResource)
+                .withAggregation("count()")
+                .withFilter("name.family.empty().not()")
+                .withFilter("gender = 'male'")
+                .build();
+
+        response = executor.execute(request);
+        assertResponse("AggregateQueryTest/queryWithCombineResultInSecondFilter.Parameters.json",
+                response);
+    }
+
 }
