@@ -685,6 +685,7 @@ class AggregateQueryTest extends AggregateExecutorTest {
         final String valueSetUrl = "http://snomed.info/sct?fhir_vs=refset/32570521000036109";
         final AggregateRequest request = new AggregateRequestBuilder(subjectResource)
                 .withAggregation("count()")
+                .withAggregation("count()")
                 .withGrouping("code.memberOf('" + valueSetUrl + "')")
                 .withFilter("category.count() > 1")
                 .withFilter("abatementString = 'test'")
