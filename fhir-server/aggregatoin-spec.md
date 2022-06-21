@@ -115,13 +115,13 @@ Or:
         ).count() == 0
 
 The explicit filter notation with `where` allows for both cases. The latter one is probably the more intuitive
-representation of the complex expression, above but in general case can become quite complex with multiple levels
+representation of the complex expression above, but in general case can become quite complex with multiple levels
 of `where` nesting.
     
 The actual transformation can be formalized but intuitively creates conjunction of nested `where` clauses.
  
-Or we can introduce a version of `and` operator that applies common prefix resolution, e.g. `%and%`, at least for the 
-purpose of specification if not in the actual implementation.
+Or we can introduce a version of `and` operator that applies common prefix resolution, e.g. `%and%` at least for the 
+purpose of specification (if not in the actual implementation).
 
 Then:
 
@@ -138,7 +138,7 @@ Another issue is the interpretation of:
 
     agg: %Patient.name.count()
     group: <None>
-    filter: [%Patient.name.given contains 'Ann']
+    filter: [%Patient.name.given family 'Brown']
 
 Should that be:
 
@@ -146,9 +146,9 @@ Should that be:
 
 or: 
 
-    %Patient.name.where(given contains 'Brown').count() == 1
+    %Patient.name.where(family contains 'Brown').count() == 1
 
-Most likely the latter, so again the filter should be applied to the longes common prefix with the aggregation expression.
+Most likely the latter, so again the filter should be applied to the longest common prefix with the aggregation expression.
 
 But perhaps the explicit expression is better ???     
     
@@ -224,7 +224,6 @@ Or more complex example:
 In this case grouping (expression) can be generated automatically from the valid values of `$parent.given` 
 (for the selected elements only, e.g: `%Patient.name.where(given contains 'Ann').family`).
 Here however the grouping expressions overlap.
-
 
 ### Filters in grouping expressions
 
