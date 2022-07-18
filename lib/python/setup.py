@@ -72,7 +72,10 @@ setup(
         ],
         license="CSIRO Open Source Software Licence Agreement",
         python_requires=">=3.7",
-        install_requires=["pyspark>=3.1.0"],
+        install_requires=[
+            "pyspark>=3.1.0",
+            "click>=8.0.0"
+        ],
         include_package_data=True,
         package_dir={
             'pathling.jars': 'target/dependency',
@@ -86,4 +89,7 @@ setup(
              glob.glob('examples/data/resources/*.ndjson')),
             ('share/pathling/examples/data/bundles', glob.glob('examples/data/bundles/*.json')),
         ],
+        entry_points={
+            'console_scripts': ['pathling = pathling.cli:cli']
+        }
 )
