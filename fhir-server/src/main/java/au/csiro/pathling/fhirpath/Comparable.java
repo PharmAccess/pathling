@@ -9,6 +9,8 @@ package au.csiro.pathling.fhirpath;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.function.TriFunction;
+import org.apache.spark.api.java.function.Function3;
 import org.apache.spark.sql.Column;
 
 /**
@@ -18,14 +20,47 @@ import org.apache.spark.sql.Column;
  */
 public interface Comparable {
 
+  public interface Comparator {
+
+    Column equalsTo(Column left, Column right);
+
+    Column lessThan(Column left, Column right);
+
+    default Column lessThanOrEqual(final Column left, final Column right) {
+      return lessThan(left, right).or(equalsTo(left, right));
+    }
+  }
+
+  static class StandardComparator implements Comparator {
+
+    @Override
+    public Column equalsTo(final Column left, final Column right) {
+      return left.equalTo(right);
+    }
+
+    @Override
+    public Column lessThan(final Column left, final Column right) {
+      return left.lt(right);
+    }
+
+    @Override
+    public Column lessThanOrEqual(final Column left, final Column right) {
+      return left.leq(right);
+    }
+  }
+
+  // TODO: DateTimeComparator
+
+  public static final Comparator STD_COMPARATOR = new StandardComparator();
+
   /**
    * Get a function that can take two Comparable paths and return a {@link Column} that contains a
-   * comparison condition. The type of condition is controlled by supplying a
-   * {@link ComparisonOperation}.
+   * comparison condition. The type of condition is controlled by supplying a {@link
+   * ComparisonOperation}.
    *
    * @param operation The {@link ComparisonOperation} type to retrieve a comparison for
-   * @return A {@link Function} that takes a Comparable as its parameter, and returns a
-   * {@link Column}
+   * @return A {@link Function} that takes a Comparable as its parameter, and returns a {@link
+   * Column}
    */
   @Nonnull
   Function<Comparable, Column> getComparison(@Nonnull ComparisonOperation operation);
@@ -57,6 +92,22 @@ public interface Comparable {
     return target -> sparkFunction.apply(source.getValueColumn(), target.getValueColumn());
   }
 
+  @Nonnull
+  static Function<Comparable, Column> buildComparisonEx(@Nonnull final Comparable source,
+      @Nonnull final ComparisonOperation operation, @Nonnull final Comparator comparator) {
+
+    final TriFunction<Comparator, Column, Column, Column> compFunction = operation.compFunction;
+
+    return target -> compFunction
+        .apply(comparator, source.getValueColumn(), target.getValueColumn());
+  }
+
+  static Function<Comparable, Column> buildComparisonEx(@Nonnull final Comparable source,
+      @Nonnull final ComparisonOperation operation) {
+
+    return buildComparisonEx(source, operation, STD_COMPARATOR);
+  }
+
   /**
    * Represents a type of comparison operation.
    */
@@ -64,32 +115,32 @@ public interface Comparable {
     /**
      * The equals operation.
      */
-    EQUALS("=", Column::equalTo),
+    EQUALS("=", Column::equalTo, Comparator::equalsTo),
 
     /**
      * The not equals operation.
      */
-    NOT_EQUALS("!=", Column::notEqual),
+    NOT_EQUALS("!=", Column::notEqual, null),
 
     /**
      * The less than or equal to operation.
      */
-    LESS_THAN_OR_EQUAL_TO("<=", Column::leq),
+    LESS_THAN_OR_EQUAL_TO("<=", Column::leq, Comparator::lessThanOrEqual),
 
     /**
      * The less than operation.
      */
-    LESS_THAN("<", Column::lt),
+    LESS_THAN("<", Column::lt, Comparator::lessThan),
 
     /**
      * The greater than or equal to operation.
      */
-    GREATER_THAN_OR_EQUAL_TO(">=", Column::geq),
+    GREATER_THAN_OR_EQUAL_TO(">=", Column::geq, null),
 
     /**
      * The greater than operation.
      */
-    GREATER_THAN(">", Column::gt);
+    GREATER_THAN(">", Column::gt, null);
 
     @Nonnull
     private final String fhirPath;
@@ -101,10 +152,15 @@ public interface Comparable {
     @Nonnull
     private final BiFunction<Column, Column, Column> sparkFunction;
 
+    @Nonnull
+    private final TriFunction<Comparator, Column, Column, Column> compFunction;
+
     ComparisonOperation(@Nonnull final String fhirPath,
-        @Nonnull final BiFunction<Column, Column, Column> sparkFunction) {
+        @Nonnull final BiFunction<Column, Column, Column> sparkFunction,
+        @Nonnull final TriFunction<Comparator, Column, Column, Column> compFunction) {
       this.fhirPath = fhirPath;
       this.sparkFunction = sparkFunction;
+      this.compFunction = compFunction;
     }
 
     @Nonnull

@@ -100,34 +100,8 @@ public class DateTimePath extends ElementPath implements Materializable<BaseDate
   @Nonnull
   public static Function<Comparable, Column> buildComparison(@Nonnull final Comparable source,
       @Nonnull final ComparisonOperation operation) {
-    return (target) -> {
-      final String functionName;
-      switch (operation) {
-        case EQUALS:
-        case NOT_EQUALS:
-          functionName = DateTimeEqualsFunction.FUNCTION_NAME;
-          final Column equals = callUDF(functionName,
-              source.getValueColumn(), target.getValueColumn());
-          return operation == ComparisonOperation.EQUALS
-                 ? equals
-                 : not(equals);
-        case LESS_THAN:
-          functionName = DateTimeLessThanFunction.FUNCTION_NAME;
-          break;
-        case LESS_THAN_OR_EQUAL_TO:
-          functionName = DateTimeLessThanOrEqualToFunction.FUNCTION_NAME;
-          break;
-        case GREATER_THAN:
-          functionName = DateTimeGreaterThanFunction.FUNCTION_NAME;
-          break;
-        case GREATER_THAN_OR_EQUAL_TO:
-          functionName = DateTimeGreaterThanOrEqualToFunction.FUNCTION_NAME;
-          break;
-        default:
-          throw new AssertionError("Unsupported operation: " + operation);
-      }
-      return callUDF(functionName, source.getValueColumn(), target.getValueColumn());
-    };
+  
+    return Comparable.buildComparisonEx(source, operation, DateTimeComparator.INSTANCE);
   }
 
   @Nonnull
