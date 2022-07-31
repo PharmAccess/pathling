@@ -33,12 +33,8 @@ public class DateTimeComparator implements Comparator {
 
   @Override
   public Column lessThan(final Column left, final Column right) {
+    // or return functions.callUDF("datetime_lt", left, right);
     return lessThanUDF.apply(left, right);
+
   }
-  
-  @Override
-  public Column lessThanOrEqual(final Column left, final Column right) {
-    return lessThan(left, right).or(equalsTo(left,right));
-  }
-  
 }
