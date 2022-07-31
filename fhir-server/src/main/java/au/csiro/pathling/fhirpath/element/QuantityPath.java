@@ -49,7 +49,7 @@ public class QuantityPath extends ElementPath implements Comparable, Numeric {
   @Nonnull
   @Override
   public Function<Comparable, Column> getComparison(@Nonnull final ComparisonOperation operation) {
-    return buildComparison(this, operation);
+    return Comparable.buildComparisonEx(this, operation, QuantityComparator.INSTANCE);
   }
 
   @Nonnull
