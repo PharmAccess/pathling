@@ -1,0 +1,31 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="fhir-server (local)" type="Application" factoryName="Application">
+    <envs>
+      <env name="spark.executor.memory" value="6g" />
+      <env name="pathling.storage.warehouseUrl" value="$USER_HOME$/data/pathling/1k_20190829" />
+      <env name="pathling.storage.databaseName" value="parquet" />
+      <env name="pathling.version" value="3.0.0-SNAPSHOT" />
+      <env name="pathling.implementationDescription" value="Piotr's Local Server" />
+      <env name="spark.driver.memory" value="2g" />
+      <env name="pathling.verboseRequestLogging" value="false" />
+      <env name="pathling.spark.explainQueries" value="false " />
+      <env name="spark.master" value="local[*]" />
+      <env name="pathling.auth.enabled" value="false" />
+      <env name="pathling.auth.issuer" value="https://dev-ztwhmd51.au.auth0.com/" />
+      <env name="pathling.auth.audience" value="http://localhost:8080/fhir" />
+      <env name="pathling.import.allowableSources" value="file://$PROJECT_DIR$/fhir-server/src/test/resources/test-data/fhir" />
+    </envs>
+    <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+    <option name="MAIN_CLASS_NAME" value="au.csiro.pathling.PathlingServer" />
+    <module name="fhir-server" />
+    <option name="VM_PARAMETERS" value="-Xmx24g" />
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -6,14 +6,13 @@ import java.util.Arrays;
 
 public interface Comparison<T> {
 
-  @Udf("lt")
+  @Udf("lt"/* , returnType="BOOL"*/)
   Boolean lessThan(T left, T right);
-
-
+  
   public static void register(SparkSession spark, Comparison<?> functions) {
 
     // can also add "namespace" such as datetime
-    
+
     Arrays.stream(functions.getClass().getMethods()).forEach(m ->
     {
       final Udf udfAnnotation = m.getAnnotation(Udf.class);
