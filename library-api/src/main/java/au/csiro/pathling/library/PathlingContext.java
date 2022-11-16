@@ -25,11 +25,12 @@ import static org.apache.spark.sql.functions.lit;
 import static org.apache.spark.sql.functions.struct;
 import static org.apache.spark.sql.functions.when;
 
+import au.csiro.pathling.config.HttpClientConfiguration;
 import au.csiro.pathling.config.TerminologyAuthConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.encoders.FhirEncoders.Builder;
-import au.csiro.pathling.fhir.DefaultTerminologyServiceFactory;
-import au.csiro.pathling.fhir.TerminologyServiceFactory;
+import au.csiro.pathling.terminology.DefaultTerminologyServiceFactory;
+import au.csiro.pathling.terminology.TerminologyServiceFactory;
 import au.csiro.pathling.sql.SqlStrategy;
 import au.csiro.pathling.sql.udf.TerminologyUdfRegistrar;
 import au.csiro.pathling.support.FhirConversionSupport;
@@ -440,8 +441,10 @@ public class PathlingContext {
                                        ? c.getTokenExpiryTolerance()
                                        : DEFAULT_TOKEN_EXPIRY_TOLERANCE);
 
-    return new DefaultTerminologyServiceFactory(FhirContext.forR4(), resolvedTerminologyServerUrl,
-        DEFAULT_TERMINOLOGY_SOCKET_TIMEOUT, false, authConfig);
+    // TODO: Fix the httpclient configuration and the constructor (builder method)
+    return new DefaultTerminologyServiceFactory(FhirContext.forR4().getVersion().getVersion(),
+        resolvedTerminologyServerUrl,
+        DEFAULT_TERMINOLOGY_SOCKET_TIMEOUT, false, HttpClientConfiguration.defaults(), authConfig);
   }
 
   private static String getRequestId() {
