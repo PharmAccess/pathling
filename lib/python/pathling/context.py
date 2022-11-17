@@ -174,7 +174,7 @@ class PathlingContext:
                                                     input_type or MimeType.FHIR_JSON,
                                                     column))
 
-    @deprecated(reason="You should use the 'udfs.member_of' UDF instread")
+    @deprecated(reason="You should use the 'udfs.member_of' UDF instead")
     def member_of(self, df: DataFrame, coding_column: Column, value_set_uri: str,
                   output_column_name: str):
         """
@@ -191,7 +191,7 @@ class PathlingContext:
         return self._wrap_df(
                 self._jpc.memberOf(df._jdf, coding_column._jc, value_set_uri, output_column_name))
 
-    @deprecated(reason="You should use the 'udfs.translate' UDF instread")
+    @deprecated(reason="You should use the 'udfs.translate' UDF instead")
     def translate(self, df: DataFrame, coding_column: Column, concept_map_uri: str,
                   reverse: Optional[bool] = False, equivalence: Optional[str] = EQ_EQUIVALENT,
                   output_column_name: Optional[str] = "result"):
