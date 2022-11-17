@@ -214,6 +214,7 @@ class PathlingContext:
                                     equivalence,
                                     output_column_name))
 
+    @deprecated(reason="You should use the 'udfs.subsumes' UDF instead")
     def subsumes(self, df: DataFrame, output_column_name: str,
                  left_coding_column: Optional[Column] = None,
                  right_coding_column: Optional[Column] = None,
