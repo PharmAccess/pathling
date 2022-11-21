@@ -22,6 +22,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
 
 /**
  * Represents configuration specific to the terminology functions of the server.
@@ -50,6 +51,11 @@ public class TerminologyConfiguration {
   @NotNull
   @Min(0)
   private Integer socketTimeout;
+
+  @DeprecatedConfigurationProperty(replacement = "terminology.client.socketTimeout")
+  public Integer getSocketTimeout() {
+    return socketTimeout;
+  }
 
   /**
    * Setting this option to {@code true} will enable additional logging of the details of requests
