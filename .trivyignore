@@ -45,3 +45,9 @@ CVE-2019-8457
 CVE-2022-1587
 CVE-2022-37434
 CVE-2022-1586
+
+
+# TODO: Double-check (consider upgrading spring/spring-boot to 6.0)
+# We do not use the class spring: HttpInvokerServiceExporter readRemoteInvocation  
+# method untrusted java deserialization (https://avd.aquasec.com/nvd/cve-2016-1000027)
+CVE-2016-1000027
