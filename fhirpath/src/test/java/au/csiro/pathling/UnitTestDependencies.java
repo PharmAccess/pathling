@@ -21,7 +21,6 @@ import au.csiro.pathling.config.SparkConfiguration;
 import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.encoders.terminology.ucum.Ucum;
-import au.csiro.pathling.io.DatabaseConfiguration;
 import au.csiro.pathling.spark.Spark;
 import au.csiro.pathling.spark.SparkConfigurer;
 import au.csiro.pathling.terminology.TerminologyService;
@@ -76,16 +75,7 @@ public class UnitTestDependencies {
   static StorageConfiguration storageConfiguration() {
     return StorageConfiguration.builder().warehouseUrl("file:///some/nonexistent/path").build();
   }
-
-  @Bean
-  @ConditionalOnMissingBean
-  @Nonnull
-  static DatabaseConfiguration databaseConfiguration(
-      @Nonnull final SparkConfiguration sparkConfiguration, @Nonnull final
-  StorageConfiguration storageConfiguration) {
-    return new DatabaseConfiguration(sparkConfiguration, storageConfiguration);
-  }
-
+  
   @Bean
   @ConditionalOnMissingBean
   @Nonnull

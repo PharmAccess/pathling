@@ -26,6 +26,7 @@ import static org.apache.spark.sql.functions.asc;
 import static org.apache.spark.sql.functions.desc;
 
 import au.csiro.pathling.caching.Cacheable;
+import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.security.ResourceAccess;
 import au.csiro.pathling.security.ResourceAccess.AccessType;
@@ -77,7 +78,7 @@ public class Database implements Cacheable {
   private final String databaseName;
 
   @Nonnull
-  private final DatabaseConfiguration configuration;
+  private final StorageConfiguration configuration;
 
   @Nonnull
   protected final SparkSession spark;
@@ -95,13 +96,13 @@ public class Database implements Cacheable {
    * @param fhirEncoders {@link FhirEncoders} object for creating empty datasets
    * @param executor a {@link ThreadPoolTaskExecutor} for executing asynchronous tasks
    */
-  public Database(@Nonnull final DatabaseConfiguration configuration,
+  public Database(@Nonnull final StorageConfiguration configuration,
       @Nonnull final SparkSession spark, @Nonnull final FhirEncoders fhirEncoders,
       @Nonnull final ThreadPoolTaskExecutor executor) {
     this.configuration = configuration;
     this.spark = spark;
-    this.warehouseUrl = convertS3ToS3aUrl(configuration.getStorage().getWarehouseUrl());
-    this.databaseName = configuration.getStorage().getDatabaseName();
+    this.warehouseUrl = convertS3ToS3aUrl(configuration.getWarehouseUrl());
+    this.databaseName = configuration.getDatabaseName();
     this.fhirEncoders = fhirEncoders;
     this.executor = executor;
     cacheKey = buildCacheKeyFromDatabase();
@@ -251,7 +252,7 @@ public class Database implements Cacheable {
     @Nullable final DeltaTable resources = DeltaTable.forPath(spark, tableUrl);
     requireNonNull(resources);
 
-    if (configuration.getSpark().getCacheDatasets()) {
+    if (configuration.getCacheDatasets()) {
       // Cache the raw resource data.
       log.debug("Caching resource dataset: {}", resourceType.toCode());
       resources.toDF().cache();
@@ -300,7 +301,7 @@ public class Database implements Cacheable {
    * Documentation - Compact files</a>
    */
   private void compact(final @Nonnull ResourceType resourceType, final DeltaTable table) {
-    final int threshold = configuration.getSpark().getCompactionThreshold();
+    final int threshold = configuration.getCompactionThreshold();
     final int numPartitions = table.toDF().rdd().getNumPartitions();
     if (numPartitions > threshold) {
       final String tableUrl = getTableUrl(warehouseUrl, databaseName, resourceType);

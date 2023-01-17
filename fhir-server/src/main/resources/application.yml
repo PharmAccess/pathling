@@ -25,6 +25,15 @@ pathling:
     # execute queries.
     explainQueries: false
 
+  storage:
+    # The base URL at which Pathling will look for data files, and where it will save data received
+    # within import requests. Can be an Amazon S3 (s3://), HDFS (hdfs://) or filesystem (file://)
+    # URL.
+    warehouseUrl: file:///usr/share/warehouse
+
+    # The subdirectory within the warehouse path used to read and write data.
+    databaseName: default
+    
     # This controls whether the built-in caching within Spark is used for resource datasets and
     # search results. It may be useful to turn this off for large datasets in memory-constrained
     # environments.
@@ -34,16 +43,6 @@ pathling:
     # threshold, the table will be repartitioned back to the default number of partitions. This
     # prevents large numbers of small updates causing poor subsequent query performance.
     compactionThreshold: 10
-
-  storage:
-    # The base URL at which Pathling will look for data files, and where it will save data received
-    # within import requests. Can be an Amazon S3 (s3://), HDFS (hdfs://) or filesystem (file://)
-    # URL.
-    warehouseUrl: file:///usr/share/warehouse
-
-    # The subdirectory within the warehouse path used to read and write data.
-    databaseName: default
-
   auth:
     # Enables authorization.
     enabled: false

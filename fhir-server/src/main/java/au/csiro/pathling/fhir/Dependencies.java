@@ -23,7 +23,6 @@ import au.csiro.pathling.config.SparkConfiguration;
 import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.config.TerminologyConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
-import au.csiro.pathling.io.DatabaseConfiguration;
 import au.csiro.pathling.terminology.DefaultTerminologyServiceFactory;
 import au.csiro.pathling.terminology.TerminologyServiceFactory;
 import ca.uhn.fhir.context.FhirContext;
@@ -53,16 +52,7 @@ public class Dependencies {
       @Nonnull final ServerConfiguration configuration) {
     return configuration.getStorage();
   }
-
-  @Bean
-  @ConditionalOnMissingBean
-  @Nonnull
-  static DatabaseConfiguration databaseConfiguration(
-      @Nonnull final ServerConfiguration configuration) {
-    return new DatabaseConfiguration(configuration.getSpark(), configuration.getStorage());
-  }
-
-
+  
   @Bean
   @ConditionalOnMissingBean
   @Nonnull

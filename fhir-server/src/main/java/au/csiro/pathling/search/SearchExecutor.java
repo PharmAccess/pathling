@@ -197,7 +197,7 @@ public class SearchExecutor extends QueryExecutor implements IBundleProvider {
           .join(filteredIds, subjectIdColumn.equalTo(col(filterIdAlias)), "left_semi");
     }
 
-    if (getConfiguration().getSpark().getCacheDatasets()) {
+    if (getConfiguration().getStorage().getCacheDatasets()) {
       // We cache the dataset because we know it will be accessed for both the total and the record
       // retrieval.
       log.debug("Caching search dataset");

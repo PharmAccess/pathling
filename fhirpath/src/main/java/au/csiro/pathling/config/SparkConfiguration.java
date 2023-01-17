@@ -48,24 +48,4 @@ public class SparkConfiguration {
   @NotNull
   @Builder.Default
   private Boolean explainQueries = false;
-
-  /**
-   * This controls whether the built-in caching within Spark is used for resource datasets and
-   * search results. It may be useful to turn this off for large datasets in memory-constrained
-   * environments.
-   */
-  @NotNull
-  @Builder.Default
-  private Boolean cacheDatasets = true;
-
-  /**
-   * When a table is updated, the number of partitions is checked. If the number exceeds this
-   * threshold, the table will be repartitioned back to the default number of partitions. This
-   * prevents large numbers of small updates causing poor subsequent query performance.
-   */
-  @NotNull
-  @Min(1)
-  @Builder.Default
-  private int compactionThreshold = 10;
-
 }
