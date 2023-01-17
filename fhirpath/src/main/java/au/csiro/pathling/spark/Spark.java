@@ -43,7 +43,7 @@ import org.springframework.core.env.PropertyResolver;
  * @author John Grimes
  */
 @Configuration
-//@Profile({"core", "spark", "unit-test"})
+@Profile({"core", "spark", "unit-test"})
 @Slf4j
 public class Spark {
 

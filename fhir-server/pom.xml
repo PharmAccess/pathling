@@ -26,7 +26,7 @@
     <artifactId>pathling</artifactId>
     <version>6.1.0</version>
   </parent>
-  <artifactId>server</artifactId>
+  <artifactId>fhir-server</artifactId>
   <packaging>jar</packaging>
 
   <name>Pathling Server</name>

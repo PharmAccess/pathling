@@ -55,13 +55,15 @@ public class UnitTestDependencies {
 
   // TODO: Why we do not need to declare it in the previous version (SpringBoot magic)???
   @Bean
+  @ConditionalOnMissingBean
   @Nonnull
   static ThreadPoolTaskExecutor threadPoolTaskExecutor() {
     return new ThreadPoolTaskExecutor();
   }
-  
-  
+
+
   @Bean
+  @ConditionalOnMissingBean
   @Nonnull
   static SparkConfiguration sparkConfiguration() {
     return SparkConfiguration.builder().build();
@@ -69,12 +71,14 @@ public class UnitTestDependencies {
 
 
   @Bean
+  @ConditionalOnMissingBean
   @Nonnull
   static StorageConfiguration storageConfiguration() {
     return StorageConfiguration.builder().warehouseUrl("file:///some/nonexistent/path").build();
   }
 
   @Bean
+  @ConditionalOnMissingBean
   @Nonnull
   static DatabaseConfiguration databaseConfiguration(
       @Nonnull final SparkConfiguration sparkConfiguration, @Nonnull final

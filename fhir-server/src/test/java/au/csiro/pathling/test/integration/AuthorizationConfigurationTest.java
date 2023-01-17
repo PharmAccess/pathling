@@ -103,7 +103,7 @@ class AuthorizationConfigurationTest extends IntegrationTest {
     final String response = restTemplate
         .getForObject("http://localhost:" + port + "/fhir/metadata", String.class);
     assertJson(
-        "responses/AuthorizationConfigurationTest/capabilityStatement.CapabilityStatement.json",
+            "responses/AuthorizationConfigurationTest/capabilityStatement.CapabilityStatement.json",
         response, JSONCompareMode.LENIENT);
   }
 

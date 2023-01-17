@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(classes = UnitTestDependencies.class)
-@ActiveProfiles({"core", "unit-test"})
+@ActiveProfiles({"unit-test"})
 @Tag("UnitTest")
 public @interface SpringBootUnitTest {
 

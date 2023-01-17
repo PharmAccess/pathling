@@ -28,7 +28,8 @@ import org.apache.spark.sql.Row;
  *
  * @author John Grimes
  */
-public interface FhirPath extends Orderable {
+public interface 
+FhirPath extends Orderable {
 
   /**
    * @return the FHIRPath expression that represents this path

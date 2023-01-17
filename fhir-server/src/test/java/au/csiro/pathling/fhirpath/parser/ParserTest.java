@@ -590,7 +590,7 @@ public class ParserTest extends AbstractParserTest {
         .isElementPath(StringPath.class)
         .selectResult()
         .hasRows(spark,
-            "responses/ParserTest/testCombineOperatorWithDifferentlyTypedStringPaths.csv");
+                "responses/ParserTest/testCombineOperatorWithDifferentlyTypedStringPaths.csv");
   }
 
   @Test
@@ -599,7 +599,7 @@ public class ParserTest extends AbstractParserTest {
         .isElementPath(StringPath.class)
         .selectResult()
         .hasRows(spark,
-            "responses/ParserTest/testCombineOperatorWithComplexTypeAndNull.csv");
+                "responses/ParserTest/testCombineOperatorWithComplexTypeAndNull.csv");
   }
 
   @Test

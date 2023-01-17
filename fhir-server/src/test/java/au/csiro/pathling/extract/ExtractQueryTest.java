@@ -303,7 +303,7 @@ class ExtractQueryTest {
     final Dataset<Row> result = executor.buildQuery(request);
     assertThat(result)
         .hasRows(spark,
-            "responses/ExtractQueryTest/multipleNonSingularColumnsWithDifferentTypes.csv");
+                "responses/ExtractQueryTest/multipleNonSingularColumnsWithDifferentTypes.csv");
   }
 
   @Test
