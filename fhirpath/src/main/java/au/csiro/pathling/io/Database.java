@@ -90,7 +90,7 @@ public class Database implements Cacheable {
   protected final ThreadPoolTaskExecutor executor;
 
   /**
-   * @param configuration a {@link DatabaseConfiguration} object which controls the behaviour of the
+   * @param configuration a {@link StorageConfiguration} object which controls the behaviour of the
    * reader
    * @param spark a {@link SparkSession} for interacting with Spark
    * @param fhirEncoders {@link FhirEncoders} object for creating empty datasets
