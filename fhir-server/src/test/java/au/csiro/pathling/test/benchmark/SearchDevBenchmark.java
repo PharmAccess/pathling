@@ -99,7 +99,8 @@ public class SearchDevBenchmark {
     }
 
     public List<IBaseResource> execute(@Nonnull final Optional<StringAndListParam> filters) {
-      final IBundleProvider executor = new SearchExecutor(configuration, fhirContext, spark,
+      final IBundleProvider executor = new SearchExecutor(configuration.getQuery(), fhirContext,
+          spark,
           database, Optional.of(terminologyServiceFactory), fhirEncoders, ResourceType.ENCOUNTER,
           filters);
       executor.size();

@@ -62,13 +62,13 @@
       <artifactId>spring-core</artifactId>
       <version>5.3.23</version>
     </dependency>
-
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-test</artifactId>
-      <scope>test</scope>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.3.23</version>
     </dependency>
 
+    
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
@@ -83,66 +83,31 @@
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-structures-r4</artifactId>
     </dependency>
-    <dependency>
-      <groupId>ca.uhn.hapi.fhir</groupId>
-      <artifactId>hapi-fhir-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ca.uhn.hapi.fhir</groupId>
-      <artifactId>hapi-fhir-client</artifactId>
-    </dependency>
-    <!-- Woodstox is used by HAPI for XML processing -->
-    <dependency>
-      <groupId>com.fasterxml.woodstox</groupId>
-      <artifactId>woodstox-core</artifactId>
-    </dependency>
 
     <!-- Apache Spark -->
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${pathling.sparkScalaVersion}</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_${pathling.sparkScalaVersion}</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.delta</groupId>
       <artifactId>delta-core_${pathling.sparkScalaVersion}</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-aws</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <artifactId>logback-classic</artifactId>
-      <groupId>ch.qos.logback</groupId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-
-    <!-- Authorization -->
-    <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>java-jwt</artifactId>
-      <version>4.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.auth0</groupId>
-      <artifactId>jwks-rsa</artifactId>
-      <version>0.21.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
     </dependency>
 
     <!-- ANTLR -->
@@ -150,19 +115,7 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4</artifactId>
     </dependency>
-
-    <!-- AWS SDK -->
-    <dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-s3</artifactId>
-    </dependency>
-
-    <!-- Error monitoring -->
-    <dependency>
-      <groupId>io.sentry</groupId>
-      <artifactId>sentry</artifactId>
-    </dependency>
-
+    
     <!-- Testing -->
     <dependency>
       <groupId>au.csiro.pathling</groupId>
@@ -176,6 +129,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -242,6 +202,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <artifactId>logback-classic</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
   <build>
@@ -390,7 +356,7 @@
     </pluginManagement>
   </build>
 
-  <profiles>    
+  <profiles>
     <!-- TODO: Enable when/if benchmark is here -->
     <!--profile>
       <id>runBenchmark</id>
@@ -434,7 +400,7 @@
         </plugins>
       </build>
     </profile-->
-    
+
     <!-- TODO: Enable when import is here -->
     <!-- profile>
       <id>importTestData</id>

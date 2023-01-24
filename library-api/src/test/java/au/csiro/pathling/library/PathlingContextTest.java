@@ -469,7 +469,7 @@ public class PathlingContextTest {
         .build();
 
     final ConstraintViolationException ex = assertThrows(ConstraintViolationException.class,
-        () -> PathlingContext.create(spark, invalidEncodersConfiguration, terminologyConfig));
+        () -> PathlingContext.create(spark, invalidEncodersConfiguration, terminologyConfig, null));
 
     assertEquals("Invalid encoding configuration:"
             + " maxNestingLevel: must be greater than or equal to 0,"

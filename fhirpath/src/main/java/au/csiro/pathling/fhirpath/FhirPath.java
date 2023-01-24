@@ -28,7 +28,7 @@ import org.apache.spark.sql.Row;
  *
  * @author John Grimes
  */
-public interface 
+public interface
 FhirPath extends Orderable {
 
   /**
@@ -115,6 +115,11 @@ FhirPath extends Orderable {
   default void dumpAll() {
     getDataset().select(getIdColumn(), getValueColumn()).collectAsList()
         .forEach(System.out::println);
+  }
+
+  @Nonnull
+  default Dataset<Row> selectResult() {
+    return getDataset().select(getIdColumn().alias("id"), getValueColumn().alias("value"));
   }
 
 }

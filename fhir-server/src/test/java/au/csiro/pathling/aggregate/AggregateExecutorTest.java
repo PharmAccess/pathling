@@ -85,7 +85,7 @@ abstract class AggregateExecutorTest {
   void setUp() {
     SharedMocks.resetAll();
     database = mock(Database.class);
-    executor = new AggregateExecutor(configuration, fhirContext, spark, database,
+    executor = new AggregateExecutor(configuration.getQuery(), fhirContext, spark, database,
         Optional.of(terminologyServiceFactory));
   }
 
@@ -107,7 +107,8 @@ abstract class AggregateExecutorTest {
         final String drillDown = firstGrouping.getDrillDown().get();
         final StringAndListParam filters = new StringAndListParam();
         filters.addAnd(new StringParam(drillDown));
-        final IBundleProvider searchExecutor = new SearchExecutor(configuration, fhirContext, spark,
+        final IBundleProvider searchExecutor = new SearchExecutor(configuration.getQuery(),
+            fhirContext, spark,
             database, Optional.of(terminologyServiceFactory),
             fhirEncoders, subjectResource, Optional.of(filters));
         final List<IBaseResource> resources = searchExecutor.getResources(0, 100);

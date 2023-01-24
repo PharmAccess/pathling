@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 public abstract class TimeComparisonFunction extends TemporalComparisonFunction<String, LocalTime> {
 
   private static final long serialVersionUID = 3661335567427062952L;
-
+  
   @Nullable
   @Override
   protected LocalTime parseEncodedValue(final String value) {

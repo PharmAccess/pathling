@@ -25,6 +25,7 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.spark.sql.functions.asc;
 import static org.apache.spark.sql.functions.desc;
 
+import au.csiro.pathling.DataSource;
 import au.csiro.pathling.caching.Cacheable;
 import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
@@ -65,7 +66,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("(core | import) & !ga4gh")
 @Slf4j
-public class Database implements Cacheable {
+public class Database implements Cacheable, DataSource {
 
   @Nonnull
   @Getter
@@ -116,6 +117,7 @@ public class Database implements Cacheable {
    */
   @ResourceAccess(AccessType.READ)
   @Nonnull
+  @Override
   public Dataset<Row> read(@Nonnull final ResourceType resourceType) {
     return attemptDeltaLoad(resourceType)
         .map(DeltaTable::toDF)

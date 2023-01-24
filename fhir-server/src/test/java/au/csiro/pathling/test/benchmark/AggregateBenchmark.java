@@ -101,7 +101,7 @@ public class AggregateBenchmark {
           ResourceType.DIAGNOSTICREPORT, ResourceType.ORGANIZATION, ResourceType.QUESTIONNAIRE,
           ResourceType.CAREPLAN);
 
-      executor = new AggregateExecutor(configuration, fhirContext, spark, database,
+      executor = new AggregateExecutor(configuration.getQuery(), fhirContext, spark, database,
           Optional.of(terminologyServiceFactory));
     }
 

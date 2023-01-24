@@ -18,6 +18,7 @@
 package au.csiro.pathling.security.ga4gh;
 
 import au.csiro.pathling.QueryExecutor;
+import au.csiro.pathling.config.QueryConfiguration;
 import au.csiro.pathling.config.ServerConfiguration;
 import au.csiro.pathling.fhirpath.ResourcePath;
 import au.csiro.pathling.io.Database;
@@ -57,7 +58,7 @@ public class PassportScopeEnforcer extends QueryExecutor {
    * to be applied
    */
   public PassportScopeEnforcer(
-      @Nonnull final ServerConfiguration configuration,
+      @Nonnull final QueryConfiguration configuration,
       @Nonnull final FhirContext fhirContext,
       @Nonnull final SparkSession sparkSession,
       @Nonnull final Database database,
@@ -83,7 +84,7 @@ public class PassportScopeEnforcer extends QueryExecutor {
 
       // Build a new expression parser, and parse all the column expressions within the query.
       final ResourcePath inputContext = ResourcePath
-          .build(getFhirContext(), getDatabase(), subjectResource,
+          .build(getFhirContext(), getDataSource(), subjectResource,
               subjectResource.toCode(), true);
 
       return filterDataset(inputContext, filters, dataset, dataset.col("id"), Column::or);

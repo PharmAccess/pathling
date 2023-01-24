@@ -23,6 +23,7 @@
 
 package au.csiro.pathling.encoders;
 
+import au.csiro.pathling.config.EncodingConfiguration;
 import au.csiro.pathling.encoders.datatypes.DataTypeMappings;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -35,6 +36,7 @@ import lombok.Value;
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import scala.collection.JavaConverters;
+import javax.annotation.Nonnull;
 
 /**
  * Spark Encoders for FHIR Resources. This object is thread safe.
@@ -243,6 +245,11 @@ public class FhirEncoders {
     return context.getVersion().getVersion();
   }
 
+
+  public FhirContext getContext() {
+    return context;
+  }
+
   /**
    * Immutable key to look up a matching encoders instance by configuration.
    */
@@ -276,6 +283,13 @@ public class FhirEncoders {
       this.enableExtensions = DEFAULT_ENABLE_EXTENSIONS;
     }
 
+    @Nonnull
+    public Builder withConfiguration(@Nonnull final EncodingConfiguration configuration) {
+      return withMaxNestingLevel(configuration.getMaxNestingLevel())
+          .withExtensionsEnabled(configuration.isEnableExtensions())
+          .withOpenTypes(configuration.getOpenTypes());
+    }
+    
     /**
      * Set the maximum nesting level for recursive data types. Zero (0) indicates that all direct or
      * indirect fields of type T in element of type T should be skipped.

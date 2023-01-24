@@ -86,7 +86,7 @@ class ExtractQueryTest {
     database = mock(Database.class);
     final ResultWriter resultWriter = mock(ResultWriter.class);
     final ResultRegistry resultRegistry = mock(ResultRegistry.class);
-    executor = new ExtractExecutor(configuration, fhirContext, spark, database,
+    executor = new ExtractExecutor(configuration.getQuery(), fhirContext, spark, database,
         Optional.ofNullable(terminologyServiceFactory), resultWriter, resultRegistry);
   }
 

@@ -102,8 +102,8 @@ public class TerminologyDevBenchmark {
           ResourceType.DIAGNOSTICREPORT, ResourceType.ORGANIZATION, ResourceType.QUESTIONNAIRE,
           ResourceType.CAREPLAN);
 
-      defaultExecutor = new AggregateExecutor(configuration, fhirContext, spark, database,
-          Optional.of(terminologyServiceFactory));
+      defaultExecutor = new AggregateExecutor(configuration.getQuery(), fhirContext, spark,
+          database, Optional.of(terminologyServiceFactory));
 
     }
 

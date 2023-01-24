@@ -26,7 +26,7 @@ import static org.apache.spark.sql.functions.col;
 
 import au.csiro.pathling.QueryHelpers.DatasetWithColumn;
 import au.csiro.pathling.QueryHelpers.JoinType;
-import au.csiro.pathling.config.ServerConfiguration;
+import au.csiro.pathling.config.QueryConfiguration;
 import au.csiro.pathling.fhirpath.FhirPath;
 import au.csiro.pathling.fhirpath.Materializable;
 import au.csiro.pathling.fhirpath.ResourcePath;
@@ -34,7 +34,6 @@ import au.csiro.pathling.fhirpath.element.BooleanPath;
 import au.csiro.pathling.fhirpath.literal.BooleanLiteralPath;
 import au.csiro.pathling.fhirpath.parser.Parser;
 import au.csiro.pathling.fhirpath.parser.ParserContext;
-import au.csiro.pathling.io.Database;
 import au.csiro.pathling.terminology.TerminologyServiceFactory;
 import ca.uhn.fhir.context.FhirContext;
 import java.util.Collection;
@@ -62,7 +61,7 @@ import org.apache.spark.sql.SparkSession;
 public abstract class QueryExecutor {
 
   @Nonnull
-  private final ServerConfiguration configuration;
+  private final QueryConfiguration configuration;
 
   @Nonnull
   private final FhirContext fhirContext;
@@ -71,25 +70,25 @@ public abstract class QueryExecutor {
   private final SparkSession sparkSession;
 
   @Nonnull
-  private final Database database;
+  private final DataSource dataSource;
 
   @Nonnull
   private final Optional<TerminologyServiceFactory> terminologyServiceFactory;
 
-  protected QueryExecutor(@Nonnull final ServerConfiguration configuration,
+  protected QueryExecutor(@Nonnull final QueryConfiguration configuration,
       @Nonnull final FhirContext fhirContext, @Nonnull final SparkSession sparkSession,
-      @Nonnull final Database database,
+      @Nonnull final DataSource dataSource,
       @Nonnull final Optional<TerminologyServiceFactory> terminologyServiceFactory) {
     this.configuration = configuration;
     this.fhirContext = fhirContext;
     this.sparkSession = sparkSession;
-    this.database = database;
+    this.dataSource = dataSource;
     this.terminologyServiceFactory = terminologyServiceFactory;
   }
 
   protected ParserContext buildParserContext(@Nonnull final FhirPath inputContext,
       @Nonnull final List<Column> groupingColumns) {
-    return new ParserContext(inputContext, fhirContext, sparkSession, database,
+    return new ParserContext(inputContext, fhirContext, sparkSession, dataSource,
         terminologyServiceFactory, groupingColumns, new HashMap<>());
   }
 
@@ -101,7 +100,7 @@ public abstract class QueryExecutor {
         .map(expression -> {
           final ParserContext currentContext = new ParserContext(parserContext.getInputContext(),
               parserContext.getFhirContext(), parserContext.getSparkSession(),
-              parserContext.getDatabase(), parserContext.getTerminologyServiceFactory(),
+              parserContext.getDataSource(), parserContext.getTerminologyServiceFactory(),
               parserContext.getGroupingColumns(), new HashMap<>());
           final Parser parser = new Parser(currentContext);
           final FhirPath result = parser.parse(expression);

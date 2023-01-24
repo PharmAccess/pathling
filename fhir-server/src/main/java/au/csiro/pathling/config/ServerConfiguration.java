@@ -78,6 +78,9 @@ public class ServerConfiguration {
   private StorageConfiguration storage;
 
   @NotNull
+  private QueryConfiguration query = QueryConfiguration.builder().build();
+
+  @NotNull
   private EncodingConfiguration encoding = EncodingConfiguration.builder().build();
 
   @NotNull

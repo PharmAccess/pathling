@@ -43,6 +43,10 @@
       <artifactId>terminology</artifactId>
     </dependency>
     <dependency>
+      <groupId>au.csiro.pathling</groupId>
+      <artifactId>fhirpath</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_${pathling.sparkScalaVersion}</artifactId>
       <scope>provided</scope>

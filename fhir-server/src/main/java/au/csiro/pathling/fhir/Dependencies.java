@@ -18,6 +18,7 @@
 package au.csiro.pathling.fhir;
 
 import au.csiro.pathling.PathlingVersion;
+import au.csiro.pathling.config.QueryConfiguration;
 import au.csiro.pathling.config.ServerConfiguration;
 import au.csiro.pathling.config.SparkConfiguration;
 import au.csiro.pathling.config.StorageConfiguration;
@@ -52,7 +53,7 @@ public class Dependencies {
       @Nonnull final ServerConfiguration configuration) {
     return configuration.getStorage();
   }
-  
+
   @Bean
   @ConditionalOnMissingBean
   @Nonnull
@@ -61,7 +62,14 @@ public class Dependencies {
     return configuration.getSpark();
   }
 
-
+  @Bean
+  @ConditionalOnMissingBean
+  @Nonnull
+  static QueryConfiguration queryConfiguration(
+      @Nonnull final ServerConfiguration configuration) {
+    return configuration.getQuery();
+  }
+  
   @Bean
   @ConditionalOnMissingBean
   @Nonnull
@@ -93,9 +101,7 @@ public class Dependencies {
     log.debug("Creating R4 FHIR encoders (max nesting level of: {}, and extensions enabled: {})",
         maxNestingLevel, enableExtensions);
     return FhirEncoders.forR4()
-        .withMaxNestingLevel(maxNestingLevel)
-        .withOpenTypes(configuration.getEncoding().getOpenTypes())
-        .withExtensionsEnabled(enableExtensions)
+        .withConfiguration(configuration.getEncoding())
         .getOrCreate();
   }
 

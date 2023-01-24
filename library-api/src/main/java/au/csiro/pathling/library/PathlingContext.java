@@ -17,15 +17,22 @@
 
 package au.csiro.pathling.library;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static org.apache.spark.sql.functions.array;
 import static org.apache.spark.sql.functions.lit;
 import static org.apache.spark.sql.functions.when;
 
+import au.csiro.pathling.api.ParserFactory;
+import au.csiro.pathling.api.PathlingClient;
 import au.csiro.pathling.config.EncodingConfiguration;
+import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.config.TerminologyConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.encoders.FhirEncoders.Builder;
+import au.csiro.pathling.fhirpath.parser.Parser;
+import au.csiro.pathling.sql.FhirpathUDFRegistrar;
 import au.csiro.pathling.sql.udf.TerminologyUdfRegistrar;
 import au.csiro.pathling.terminology.DefaultTerminologyServiceFactory;
 import au.csiro.pathling.terminology.TerminologyFunctions;
@@ -50,6 +57,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.Enumerations.ResourceType;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,19 +88,25 @@ public class PathlingContext {
   @Getter
   private final TerminologyServiceFactory terminologyServiceFactory;
 
+  @Nullable
+  private final ParserFactory parserFactory;
+
   @Nonnull
   private final TerminologyFunctions terminologyFunctions;
 
 
   private PathlingContext(@Nonnull final SparkSession spark,
       @Nonnull final FhirEncoders fhirEncoders,
-      @Nonnull final TerminologyServiceFactory terminologyServiceFactory) {
+      @Nonnull final TerminologyServiceFactory terminologyServiceFactory,
+      @Nullable final ParserFactory parserFactory) {
     this.spark = spark;
     this.fhirVersion = fhirEncoders.getFhirVersion();
     this.fhirEncoders = fhirEncoders;
     this.terminologyServiceFactory = terminologyServiceFactory;
+    this.parserFactory = parserFactory;
     this.terminologyFunctions = TerminologyFunctions.build();
     TerminologyUdfRegistrar.registerUdfs(spark, terminologyServiceFactory);
+    FhirpathUDFRegistrar.registerUDFs(spark);
   }
 
   /**
@@ -102,9 +116,18 @@ public class PathlingContext {
   @Nonnull
   public static PathlingContext create(@Nonnull final SparkSession spark,
       @Nonnull final FhirEncoders fhirEncoders,
-      @Nonnull final TerminologyServiceFactory terminologyServiceFactory) {
-    return new PathlingContext(spark, fhirEncoders, terminologyServiceFactory);
+      @Nonnull final TerminologyServiceFactory terminologyServiceFactory,
+      @Nullable final ParserFactory parserFactory) {
+    return new PathlingContext(spark, fhirEncoders, terminologyServiceFactory, parserFactory);
   }
+
+  @Nonnull
+  public static PathlingContext create(@Nonnull final SparkSession spark,
+      @Nonnull final FhirEncoders fhirEncoders,
+      @Nonnull final TerminologyServiceFactory terminologyServiceFactory) {
+    return create(spark, fhirEncoders, terminologyServiceFactory, null);
+  }
+
 
   /**
    * Creates a new {@link PathlingContext} using supplied configuration and a pre-configured {@link
@@ -113,15 +136,24 @@ public class PathlingContext {
   @Nonnull
   public static PathlingContext create(@Nonnull final SparkSession sparkSession,
       @Nonnull final EncodingConfiguration encodingConfiguration,
-      @Nonnull final TerminologyConfiguration terminologyConfiguration) {
+      @Nonnull final TerminologyConfiguration terminologyConfiguration,
+      @Nullable final StorageConfiguration storageConfiguration) {
 
     ValidationUtils.ensureValid(terminologyConfiguration, "Invalid terminology configuration");
     ValidationUtils.ensureValid(encodingConfiguration, "Invalid encoding configuration");
-    
-    final Builder encoderBuilder = getEncoderBuilder(encodingConfiguration);
+
+    final FhirEncoders fhirEncoders = getEncoderBuilder(encodingConfiguration).getOrCreate();
     final TerminologyServiceFactory terminologyServiceFactory = getTerminologyServiceFactory(
         terminologyConfiguration);
-    return create(sparkSession, encoderBuilder.getOrCreate(), terminologyServiceFactory);
+    final ParserFactory parserFactory = isNull(storageConfiguration)
+                                        ? null
+                                        : ParserFactory.custom()
+                                            .withSpark(sparkSession)
+                                            .withEncoders(fhirEncoders)
+                                            .withTerminologyServiceFactory(
+                                                terminologyServiceFactory)
+                                            .withStorageConfiguration(storageConfiguration).build();
+    return create(sparkSession, fhirEncoders, terminologyServiceFactory, parserFactory);
   }
 
   /**
@@ -131,7 +163,7 @@ public class PathlingContext {
   public static PathlingContext create(@Nonnull final SparkSession sparkSession) {
     final EncodingConfiguration encodingConfig = EncodingConfiguration.builder().build();
     final TerminologyConfiguration terminologyConfig = TerminologyConfiguration.builder().build();
-    return create(sparkSession, encodingConfig, terminologyConfig);
+    return create(sparkSession, encodingConfig, terminologyConfig, null);
   }
 
   /**
@@ -142,7 +174,7 @@ public class PathlingContext {
   public static PathlingContext create(@Nonnull final SparkSession sparkSession,
       @Nonnull final EncodingConfiguration encodingConfig) {
     final TerminologyConfiguration terminologyConfig = TerminologyConfiguration.builder().build();
-    return create(sparkSession, encodingConfig, terminologyConfig);
+    return create(sparkSession, encodingConfig, terminologyConfig, null);
   }
 
   /**
@@ -153,7 +185,7 @@ public class PathlingContext {
   public static PathlingContext create(@Nonnull final SparkSession sparkSession,
       @Nonnull final TerminologyConfiguration terminologyConfig) {
     final EncodingConfiguration encodingConfig = EncodingConfiguration.builder().build();
-    return create(sparkSession, encodingConfig, terminologyConfig);
+    return create(sparkSession, encodingConfig, terminologyConfig, null);
   }
 
   /**
@@ -387,6 +419,17 @@ public class PathlingContext {
   }
 
   @Nonnull
+  public PathlingClient.Builder newClientBuilder() {
+    return new PathlingClient.Builder(fhirEncoders.getContext(), spark,  terminologyServiceFactory);
+  }
+  
+  @Nonnull
+  public Parser createResourceParser(@Nonnull final String resourceCode) {
+    final ResourceType resourceType = ResourceType.fromCode(resourceCode);
+    return requireNonNull(parserFactory).create(resourceType);
+  }
+
+  @Nonnull
   private static Builder getEncoderBuilder(@Nonnull final EncodingConfiguration config) {
     return FhirEncoders.forR4()
         .withMaxNestingLevel(config.getMaxNestingLevel())
@@ -400,5 +443,7 @@ public class PathlingContext {
     final FhirVersionEnum fhirVersion = FhirContext.forR4().getVersion().getVersion();
     return new DefaultTerminologyServiceFactory(fhirVersion, configuration);
   }
+  
+  
 
 }

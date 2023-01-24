@@ -90,7 +90,7 @@ class SearchExecutorBuilder {
 
   SearchExecutor build() {
     requireNonNull(subjectResource);
-    return new SearchExecutor(configuration, fhirContext, sparkSession, database,
+    return new SearchExecutor(configuration.getQuery(), fhirContext, sparkSession, database,
         Optional.of(terminologyServiceFactory), fhirEncoders, subjectResource, filters);
   }
 
