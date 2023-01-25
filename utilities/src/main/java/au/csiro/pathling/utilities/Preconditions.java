@@ -139,8 +139,8 @@ public abstract class Preconditions {
 
 
   /**
-   * Converts a function which throws a {@link FHIRException} to a function that throws an
-   * {@link InvalidUserInputError} in the same situation.
+   * Converts a function which throws a {@link FHIRException} to a function that throws an {@link
+   * InvalidUserInputError} in the same situation.
    *
    * @param func the function throwing {@link FHIRException}
    * @param <T> the type of the function argument.
@@ -159,5 +159,12 @@ public abstract class Preconditions {
     };
   }
 
+  @Nonnull
+  public static String checkNotBlank(@Nonnull final String string) {
+    if (string.isBlank()) {
+      throw new IllegalArgumentException("Non blank string expected");
+    }
+    return string;
+  }
 
 }

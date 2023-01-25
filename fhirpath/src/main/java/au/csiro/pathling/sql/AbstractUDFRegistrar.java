@@ -1,6 +1,7 @@
 package au.csiro.pathling.sql;
 
 import au.csiro.pathling.spark.SparkConfigurer;
+import au.csiro.pathling.sql.udf.SqlFunction1;
 import au.csiro.pathling.sql.udf.SqlFunction2;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.UDFRegistration;
@@ -14,6 +15,11 @@ public abstract class AbstractUDFRegistrar implements SparkConfigurer {
 
     public UDFRegistrar(@Nonnull SparkSession spark) {
       this.udfRegistration = spark.udf();
+    }
+
+    public UDFRegistrar register(@Nonnull SqlFunction1<?, ?> udf1) {
+      udfRegistration.register(udf1.getName(), udf1, udf1.getReturnType());
+      return this;
     }
 
     public UDFRegistrar register(@Nonnull SqlFunction2<?, ?, ?> udf2) {

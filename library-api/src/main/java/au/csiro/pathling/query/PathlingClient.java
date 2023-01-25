@@ -1,4 +1,4 @@
-package au.csiro.pathling.api;
+package au.csiro.pathling.query;
 
 import au.csiro.pathling.DataSource;
 import au.csiro.pathling.SimpleDataSource;
@@ -8,6 +8,7 @@ import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.extract.ExtractQueryExecutor;
 import au.csiro.pathling.extract.ExtractRequest;
 import au.csiro.pathling.io.Database;
+import au.csiro.pathling.library.PathlingContext;
 import au.csiro.pathling.terminology.TerminologyServiceFactory;
 import ca.uhn.fhir.context.FhirContext;
 import java.util.Optional;
@@ -61,6 +62,12 @@ public class PathlingClient {
     }
 
     @Nonnull
+    public Builder withQueryConfiguration(@Nonnull final QueryConfiguration queryConfiguration) {
+      this.queryConfiguration = queryConfiguration;
+      return this;
+    }
+
+    @Nonnull
     public Builder withResource(@Nonnull final ResourceType resourceType,
         @Nonnull final Dataset<Row> dataset) {
       getSimpleBuilder().withResource(resourceType, dataset);
@@ -68,16 +75,22 @@ public class PathlingClient {
     }
 
     @Nonnull
-    public Builder withStorage(@Nonnull final StorageConfiguration storageConfiguration) {
+    public Builder withStorageConfiguration(
+        @Nonnull final StorageConfiguration storageConfiguration) {
       this.storageConfiguration = storageConfiguration;
       this.simpleBuilder = null;
       return this;
     }
-    
+
     @Nonnull
-    PathlingClient build() {
+    public PathlingClient build() {
       return new PathlingClient(fhirContext, sparkSession, buildDataSource(), queryConfiguration,
           Optional.of(terminologyClientFactory));
+    }
+
+    @Nonnull
+    public ExtractQuery buildExtractQuery(@Nonnull final ResourceType resourceType) {
+      return this.build().newExtractQuery(resourceType);
     }
 
     @Nonnull
@@ -101,7 +114,7 @@ public class PathlingClient {
       return simpleBuilder;
     }
   }
-  
+
   @Nonnull
   public Dataset<Row> execute(@Nonnull final ExtractRequest extractRequest) {
     return new ExtractQueryExecutor(
@@ -111,5 +124,16 @@ public class PathlingClient {
         dataSource,
         terminologyClientFactory
     ).buildQuery(extractRequest);
+  }
+
+  @Nonnull
+  public ExtractQuery newExtractQuery(@Nonnull final ResourceType resourceType) {
+    return ExtractQuery.of(resourceType).withClient(this);
+  }
+
+
+  @Nonnull
+  public static Builder builder(@Nonnull final PathlingContext pathlingContext) {
+    return pathlingContext.newClientBuilder();
   }
 }

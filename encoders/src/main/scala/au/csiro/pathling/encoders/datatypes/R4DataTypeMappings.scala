@@ -112,7 +112,7 @@ class R4DataTypeMappings extends DataTypeMappings {
 
       case tsClass if tsClass == classOf[org.hl7.fhir.r4.model.InstantType] =>
 
-        Cast(dataTypeToUtf8Expr(inputObject), DataTypes.TimestampType, Some("UTC"))
+        new Cast(dataTypeToUtf8Expr(inputObject), DataTypes.TimestampType, Some("UTC"))
 
       case base64Class if base64Class == classOf[org.hl7.fhir.r4.model.Base64BinaryType] =>
 

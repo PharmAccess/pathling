@@ -17,6 +17,7 @@
 
 package au.csiro.pathling.config;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -52,7 +53,7 @@ public class StorageConfiguration {
   @Size(min = 1, max = 50)
   @Builder.Default
   private String databaseName = "default";
-  
+
   /**
    * This controls whether the built-in caching within Spark is used for resource datasets and
    * search results. It may be useful to turn this off for large datasets in memory-constrained
@@ -71,4 +72,15 @@ public class StorageConfiguration {
   @Min(1)
   @Builder.Default
   private int compactionThreshold = 10;
+
+  @Nonnull
+  public static StorageConfiguration forDatabase(@Nonnull final String warehouseUrl) {
+    return builder().warehouseUrl(warehouseUrl).build();
+  }
+
+  public static StorageConfiguration forDatabase(@Nonnull final String warehouseUrl,
+      @Nonnull final String databaseName) {
+    return builder().warehouseUrl(warehouseUrl).databaseName(databaseName).build();
+  }
+
 }

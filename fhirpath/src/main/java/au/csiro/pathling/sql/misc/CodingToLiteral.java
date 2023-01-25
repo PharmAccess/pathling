@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package au.csiro.pathling.terminology;
+package au.csiro.pathling.sql.misc;
 
 import au.csiro.pathling.fhirpath.encoding.CodingEncoding;
 import au.csiro.pathling.fhirpath.literal.CodingLiteral;

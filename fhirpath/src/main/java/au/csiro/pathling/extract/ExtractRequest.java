@@ -19,10 +19,13 @@ package au.csiro.pathling.extract;
 
 import static au.csiro.pathling.utilities.Preconditions.checkUserInput;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import au.csiro.pathling.utilities.Preconditions;
 import lombok.Value;
 import org.hl7.fhir.r4.model.Enumerations.ResourceType;
 
@@ -34,6 +37,15 @@ import org.hl7.fhir.r4.model.Enumerations.ResourceType;
 @Value
 public class ExtractRequest {
 
+  @Value
+  public static class ExpressionWithLabel {
+    @Nonnull
+    String expression;
+    
+    @Nullable
+    String label;
+  }
+  
   @Nonnull
   ResourceType subjectResource;
 
@@ -45,17 +57,17 @@ public class ExtractRequest {
 
   @Nonnull
   Optional<Integer> limit;
-  
+
   public static class Builder {
 
     @Nonnull
     final ResourceType subjectResource;
 
     @Nonnull
-    List<String> columns;
+    List<String> columns = new ArrayList<>();
 
     @Nonnull
-    List<String> filters;
+    List<String> filters = new ArrayList<>();
 
     @Nonnull
     Optional<Integer> limit;
@@ -63,14 +75,45 @@ public class ExtractRequest {
     public Builder(@Nonnull final ResourceType subjectResource) {
       this.subjectResource = subjectResource;
     }
-    
+
     @Nonnull
     public Builder withLimit(int limit) {
       this.limit = Optional.of(limit);
       return this;
     }
+
+    @Nonnull
+    public Builder withFilter(@Nonnull final String filterFhirpath) {
+      filters.add(Preconditions.checkNotBlank(filterFhirpath));
+      return this;
+    }
+
+    @Nonnull
+    public ExtractRequest build() {
+      return new ExtractRequest(subjectResource,
+          columns.isEmpty()
+          ? Collections.emptyList()
+          : columns,
+          filters.isEmpty()
+          ? Collections.emptyList()
+          : filters,
+          limit);
+    }
+
+    @Nonnull
+    public Builder withColumn(@Nonnull final String columnFhirpath) {
+      return withColumn(columnFhirpath, columnFhirpath);
+    }
+
+    @Nonnull
+    public Builder withColumn(@Nonnull final String columnFhirpath, @Nonnull final String columnAlias) {
+      columns.add(Preconditions.checkNotBlank(columnFhirpath));
+      return this;
+    }
+
+
   }
-  
+
   /**
    * @param subjectResource the resource which will serve as the input context for each expression
    * @param columns a set of columns expressions to execute over the data
@@ -104,5 +147,5 @@ public class ExtractRequest {
   public static Builder builderFor(@Nonnull final ResourceType subjectResource) {
     return new Builder(subjectResource);
   }
-  
+
 }

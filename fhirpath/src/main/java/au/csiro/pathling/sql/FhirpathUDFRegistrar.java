@@ -4,6 +4,7 @@ import au.csiro.pathling.spark.SparkConfigurer;
 import au.csiro.pathling.sql.dates.date.DateUDFRegistrar;
 import au.csiro.pathling.sql.dates.datetime.DateTimeUDFRegistrar;
 import au.csiro.pathling.sql.dates.time.TimeUdfRegistrar;
+import au.csiro.pathling.sql.misc.MiscUDFRegistrar;
 import org.apache.spark.sql.SparkSession;
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.List;
 public class FhirpathUDFRegistrar implements SparkConfigurer {
 
   private final List<SparkConfigurer> children = List.of(
-      new DateUDFRegistrar(), new TimeUdfRegistrar(), new DateTimeUDFRegistrar()
+      new DateUDFRegistrar(), new TimeUdfRegistrar(), new DateTimeUDFRegistrar(),
+      new MiscUDFRegistrar()
   );
 
   @Override

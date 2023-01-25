@@ -12,7 +12,6 @@ public class SimpleDataSource implements DataSource {
   @Nonnull
   private final Map<ResourceType, Dataset<Row>> resourceMap;
 
-
   public static class Builder {
 
     private final Map<ResourceType, Dataset<Row>> resourceMap = new HashMap<>();
@@ -38,6 +37,9 @@ public class SimpleDataSource implements DataSource {
   @Nonnull
   @Override
   public Dataset<Row> read(@Nonnull final ResourceType resourceType) {
-    return null;
+    return resourceMap.computeIfAbsent(resourceType, key -> {
+      throw new IllegalStateException(
+          String.format("Cannot find data for resource of type: %s", key));
+    });
   }
 }

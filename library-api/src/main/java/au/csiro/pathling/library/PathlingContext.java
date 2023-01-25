@@ -25,7 +25,7 @@ import static org.apache.spark.sql.functions.lit;
 import static org.apache.spark.sql.functions.when;
 
 import au.csiro.pathling.api.ParserFactory;
-import au.csiro.pathling.api.PathlingClient;
+import au.csiro.pathling.query.PathlingClient;
 import au.csiro.pathling.config.EncodingConfiguration;
 import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.config.TerminologyConfiguration;
@@ -43,11 +43,6 @@ import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.context.RuntimeResourceDefinition;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Column;
@@ -58,8 +53,6 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Enumerations.ResourceType;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * A class designed to provide access to selected Pathling functionality from non-JVM language
