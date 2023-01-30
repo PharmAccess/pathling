@@ -17,19 +17,17 @@
 
 package au.csiro.pathling.test.assertions;
 
-import static au.csiro.pathling.utilities.Preconditions.check;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import au.csiro.pathling.fhirpath.FhirPath;
 import au.csiro.pathling.fhirpath.ResourcePath;
 import au.csiro.pathling.fhirpath.element.ElementPath;
 import au.csiro.pathling.fhirpath.literal.LiteralPath;
+import org.apache.spark.sql.Column;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import org.apache.spark.sql.Column;
+
+import static au.csiro.pathling.utilities.Preconditions.check;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Piotr Szul

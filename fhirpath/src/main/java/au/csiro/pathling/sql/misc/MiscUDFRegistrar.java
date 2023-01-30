@@ -8,6 +8,7 @@ public class MiscUDFRegistrar extends AbstractUDFRegistrar {
   @Override
   protected void registerUDFs(final UDFRegistrar udfRegistrar) {
     udfRegistrar
-        .register(new CodingToLiteral());
+        .register(new CodingToLiteral())
+        .register(new TemporalDifferenceFunction());
   }
 }

@@ -21,9 +21,8 @@ import static au.csiro.pathling.test.assertions.Assertions.assertDatasetAgainstC
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import au.csiro.pathling.config.StorageConfiguration;
-import au.csiro.pathling.io.ResultWriter;
 import au.csiro.pathling.test.builders.DatasetBuilder;
+import au.csiro.pathling.utilities.Datasets;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -166,25 +165,7 @@ public class DatasetAssert {
     } catch (final IOException e) {
       log.info("Existing file not found, skipping delete");
     }
-
-    // TODO: This will probably add extra /default to the path
-    final StorageConfiguration configuration = StorageConfiguration.builder()
-        .warehouseUrl("file://" + location).build();
-    final ResultWriter resultWriter = new ResultWriter(configuration, spark);
-    resultWriter.write(dataset, name, SaveMode.Overwrite);
-    final Path tempPath = Path.of(location, "results", name + ".csv");
-    try {
-      Files.copy(tempPath, path);
-    } catch (final IOException e) {
-      throw new RuntimeException("Problem copying file", e);
-    }
-
-    try {
-      Files.walkFileTree(Path.of(location, "results"), new DeleteDirectoryVisitor());
-    } catch (final IOException e) {
-      log.error("Problem cleaning up", e);
-    }
-
+    Datasets.writeCsv(dataset, path.toUri().toString(), SaveMode.Overwrite);
     throw new AssertionError(
         "Rows saved to CSV, check that the file is correct and replace this line with an assertion");
   }

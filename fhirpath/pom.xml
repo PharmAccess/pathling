@@ -53,22 +53,8 @@
       <groupId>au.csiro.pathling</groupId>
       <artifactId>utilities</artifactId>
     </dependency>
-
-
-    <!-- TODO: parametrize the correct version -->
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>5.3.23</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>5.3.23</version>
-    </dependency>
-
     
+    <!-- JSR 303 validation -->
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>

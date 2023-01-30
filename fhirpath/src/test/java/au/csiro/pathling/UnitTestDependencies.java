@@ -21,15 +21,14 @@ import au.csiro.pathling.config.SparkConfiguration;
 import au.csiro.pathling.config.StorageConfiguration;
 import au.csiro.pathling.encoders.FhirEncoders;
 import au.csiro.pathling.encoders.terminology.ucum.Ucum;
-import au.csiro.pathling.spark.Spark;
-import au.csiro.pathling.spark.SparkConfigurer;
+import au.csiro.pathling.sql.FhirpathUDFRegistrar;
+import au.csiro.pathling.sql.udf.TerminologyUdfRegistrar;
 import au.csiro.pathling.terminology.TerminologyService;
 import au.csiro.pathling.terminology.TerminologyServiceFactory;
 import au.csiro.pathling.test.SharedMocks;
 import au.csiro.pathling.test.stubs.TestTerminologyServiceFactory;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.apache.spark.scheduler.SparkListener;
@@ -75,7 +74,7 @@ public class UnitTestDependencies {
   static StorageConfiguration storageConfiguration() {
     return StorageConfiguration.builder().warehouseUrl("file:///some/nonexistent/path").build();
   }
-  
+
   @Bean
   @ConditionalOnMissingBean
   @Nonnull
@@ -88,9 +87,16 @@ public class UnitTestDependencies {
   @Nonnull
   static SparkSession sparkSession(@Nonnull final SparkConfiguration configuration,
       @Nonnull final Environment environment,
-      @Nonnull final List<SparkConfigurer> sparkConfigurers,
+      @Nonnull final TerminologyServiceFactory terminologyServiceFactory,
       @Nonnull final Optional<SparkListener> sparkListener) {
-    return Spark.build(configuration, environment, sparkListener, sparkConfigurers);
+    // TODO: Fix 
+    final SparkSession spark = SparkSession.builder()
+        .master("local[1]")
+        .appName("pathling-unittest")
+        .getOrCreate();
+    TerminologyUdfRegistrar.registerUdfs(spark, terminologyServiceFactory);
+    FhirpathUDFRegistrar.registerUDFs(spark);
+    return spark;
   }
 
   @Bean

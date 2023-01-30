@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,20 +55,16 @@ import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Enumerations.ResourceType;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 
 /**
  * Used for reading and writing resource data in persistent storage.
  *
  * @author John Grimes
  */
-@Component
-@Profile("(core | import) & !ga4gh")
+
 @Slf4j
 public class Database implements Cacheable, DataSource {
-
+  
   @Nonnull
   @Getter
   private Optional<String> cacheKey;
@@ -88,18 +85,18 @@ public class Database implements Cacheable, DataSource {
   protected final FhirEncoders fhirEncoders;
 
   @Nonnull
-  protected final ThreadPoolTaskExecutor executor;
+  protected final Executor executor;
 
   /**
    * @param configuration a {@link StorageConfiguration} object which controls the behaviour of the
    * reader
    * @param spark a {@link SparkSession} for interacting with Spark
    * @param fhirEncoders {@link FhirEncoders} object for creating empty datasets
-   * @param executor a {@link ThreadPoolTaskExecutor} for executing asynchronous tasks
+   * @param executor a {@link Executor} for executing asynchronous tasks
    */
   public Database(@Nonnull final StorageConfiguration configuration,
       @Nonnull final SparkSession spark, @Nonnull final FhirEncoders fhirEncoders,
-      @Nonnull final ThreadPoolTaskExecutor executor) {
+      @Nonnull final Executor executor) {
     this.configuration = configuration;
     this.spark = spark;
     this.warehouseUrl = convertS3ToS3aUrl(configuration.getWarehouseUrl());
@@ -310,7 +307,10 @@ public class Database implements Cacheable, DataSource {
       log.debug("Scheduling table compaction (number of partitions: {}, threshold: {}): {}",
           numPartitions,
           threshold, tableUrl);
-      executor.submit(() -> {
+      
+      // TODO: Consider is compaction should be mandatory
+      // and how it should be triggered
+      executor.execute(() -> {
         log.debug("Commencing compaction: {}", tableUrl);
         read(resourceType)
             .repartition()
@@ -328,6 +328,8 @@ public class Database implements Cacheable, DataSource {
   }
 
   private void invalidateCache(final String tableUrl) {
+    // TODO: consider if this needs (and can) to be done asynchronusly and 
+    // and in any case if it is thread safe
     executor.execute(() -> {
       cacheKey = buildCacheKeyFromTable(tableUrl);
       spark.sqlContext().clearCache();
