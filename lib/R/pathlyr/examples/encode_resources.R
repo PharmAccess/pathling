@@ -8,6 +8,7 @@ sc <- spark_connect(master = "local")
 # with sparkly which does not support map fields with integer keys required for representing extensions.
 pc <- ptl_connect(sc, enable_extensions=FALSE)
 
-json_resources <- spark_read_text(sc, path='~/dev/pathling/library-api/src/test/resources/test-data/ndjson')
+json_resources <- spark_read_text(sc, path=system.file('data','ndjson', package='pathlyr'))
 pc %>% ptl_encode(json_resources, 'Condition') %>% show()
+
 
