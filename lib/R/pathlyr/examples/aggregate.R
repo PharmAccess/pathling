@@ -10,8 +10,8 @@ print(sprintf('Using ndjson resources from: %s', NDJSON_DIR_URI))
 
 data_source <- pc %>% ds_from_ndjson_dir(NDJSON_DIR_URI)
 
-data_source %>% aggregate('Patient',
+result <- data_source %>% aggregate('Patient',
               aggregations = c(patientCount='count()', 'id.count()'),
               groupings = c('gender', givenName='name.given')
-        ) %>% show()
+        )
 
