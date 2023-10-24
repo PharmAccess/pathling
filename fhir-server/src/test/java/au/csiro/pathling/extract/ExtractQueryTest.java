@@ -333,6 +333,22 @@ class ExtractQueryTest {
   }
 
   @Test
+  void issue1770() {
+    subjectResource = ResourceType.OBSERVATION;
+    mockResource(subjectResource);
+
+    final ExtractRequest request = new ExtractRequestBuilder(subjectResource)
+        .withColumn("id")
+        .withColumn("valueQuantity.value")
+        .build();
+
+    final Dataset<Row> result = executor.buildQuery(request);
+    assertThat(result)
+        .debugAllRows();
+    result.printSchema();
+  }
+
+  @Test
   void emptyColumn() {
     subjectResource = ResourceType.PATIENT;
     mockResource(ResourceType.PATIENT);

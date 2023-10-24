@@ -28,6 +28,13 @@ def test_data_source(pathling_ctx, test_data_dir):
     return pathling_ctx.read.ndjson(os.path.join(test_data_dir, "ndjson"))
 
 
+@fixture(scope="module")
+def test_bundles_data_source(pathling_ctx, test_data_dir):
+    return pathling_ctx.read.bundles(
+        os.path.join(test_data_dir, "bundles"), resource_types=["Observation"]
+    )
+
+
 def test_extract(test_data_source):
     result = test_data_source.extract(
         "Patient",
@@ -82,6 +89,27 @@ def test_extract_no_filters(test_data_source):
             ExtractRow("121503c8-9564-4b48-9086-a22df717948e", "female", "363406005"),
         ],
         result.orderBy("id", "gender", "condition_code").limit(5).collect(),
+    )
+
+
+def test_extract_issue_1770(test_bundles_data_source):
+    result = test_bundles_data_source.extract(
+        "Observation",
+        columns=[
+            Expression("id", "Identifier"),
+            Expression("valueQuantity.value", "Value_Quantity"),
+        ],
+    )
+
+    # noinspection PyPep8Naming
+    ExtractRow = Row("Identifier", "Value_Quantity")
+
+    assert_result(
+        [
+            ExtractRow("e1f0e0c0-0f2e-4e1f-8e1a-0e1f0e0c0f2e", 0.0),
+            ExtractRow("e1f0e0c0-0f2e-4e1f-8e1a-0e1f0e0c0f2e", 0.0),
+        ],
+        result.orderBy("Identifier", "Value_Quantity").limit(2).collect(),
     )
 
 
