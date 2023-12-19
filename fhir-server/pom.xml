@@ -36,7 +36,6 @@
     <pathling.fhirServerDockerRepo>aehrc/pathling</pathling.fhirServerDockerRepo>
     <pathling.fhirServerDockerTag>latest</pathling.fhirServerDockerTag>
     <pathling.dockerArchitecture>arm64</pathling.dockerArchitecture>
-    <jmh.version>1.36</jmh.version>
     <pathling.dockerBaseImage>amazoncorretto:11</pathling.dockerBaseImage>
   </properties>
 
@@ -265,14 +264,10 @@
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
-      <version>${jmh.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-generator-annprocess</artifactId>
-      <version>${jmh.version}</version>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>

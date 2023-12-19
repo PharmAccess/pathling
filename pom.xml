@@ -96,6 +96,7 @@
     <pathling.slf4jVersion>1.7.36</pathling.slf4jVersion>
     <pathling.logbackVersion>1.2.11</pathling.logbackVersion>
     <pathling.surefireVersion>3.1.2</pathling.surefireVersion>
+    <pathling.jmh.version>1.36</pathling.jmh.version>
   </properties>
 
   <modules>
@@ -507,6 +508,18 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>4.2.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${pathling.jmh.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${pathling.jmh.version}</version>
         <scope>test</scope>
       </dependency>
 
