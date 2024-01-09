@@ -19,24 +19,32 @@ package au.csiro.pathling.view;
 
 import au.csiro.pathling.fhirpath.FhirPath;
 import au.csiro.pathling.view.DatasetResult.One;
+import java.util.List;
+import javax.annotation.Nonnull;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-
-import javax.annotation.Nonnull;
-import java.util.List;
+import org.apache.spark.sql.Column;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class ForEachOrNullSelection extends AbstractCompositeSelection {
 
-  public ForEachOrNullSelection(final FhirPath parent, final List<Selection> components) {
+  int index;
+
+  public ForEachOrNullSelection(final FhirPath parent, final List<Selection> components,
+      final int index) {
     super(parent, components);
+    this.index = index;
   }
 
+  public ForEachOrNullSelection(final FhirPath parent, final List<Selection> components) {
+    this(parent, components, 0);
+  }
+  
   @Nonnull
   @Override
   protected String getName() {
-    return "forEachOrNull";
+    return "forEachOrNull[" + index + "]";
   }
 
   @Nonnull
@@ -48,7 +56,13 @@ public class ForEachOrNullSelection extends AbstractCompositeSelection {
   @Nonnull
   @Override
   protected One<ProjectionContext> subContext(@Nonnull final ProjectionContext context,
-                                                              @Nonnull final FhirPath parent) {
-    return context.subContext(parent, true, true);
+      @Nonnull final FhirPath parent) {
+    final One<ProjectionContext> newContext = context.subContext(parent, true, true);
+    final Column inputContextColumn = newContext.getValue().getInputContext()
+        .getCtx().getValue();
+    return (index == 0)
+           ? newContext
+           : newContext.andThenTransformOf(
+               DatasetResult.fromTransform(ds -> ds.filter(inputContextColumn.isNotNull())));
   }
 }

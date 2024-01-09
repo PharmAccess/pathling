@@ -156,6 +156,11 @@ public interface DatasetResult<T> {
     }
 
     @Nonnull
+    public One<T> andThenTransformOf(@Nonnull final DatasetResult<T> other) {
+      return new One<>(value, asTransform().andThen(other).getTransform());
+    }
+    
+    @Nonnull
     public T getPureValue() {
       if (transform.isPresent()) {
         throw new IllegalStateException("Cannot get pure value from transformed result");

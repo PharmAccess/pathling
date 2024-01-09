@@ -84,6 +84,6 @@ public class FhirView {
    * href="https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.where">ViewDefinition.where</a>
    */
   @Nullable
-  List<WhereClause> where;
+  List<WhereElement> where;
 
 }

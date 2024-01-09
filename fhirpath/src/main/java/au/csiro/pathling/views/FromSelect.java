@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,7 +31,7 @@ public class FromSelect extends SelectClause {
   String path;
 
   @NotNull
-  List<Column> column = Collections.emptyList();
+  List<ColumnElement> column = Collections.emptyList();
 
   /**
    * Nested select relative to the {@link #path}.
@@ -40,4 +41,9 @@ public class FromSelect extends SelectClause {
    */
   @NotNull
   List<SelectClause> select = Collections.emptyList();
+
+  @NotNull
+  @Size()
+  List<SelectClause> unionAll = Collections.emptyList();
+
 }

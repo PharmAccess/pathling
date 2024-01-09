@@ -13,7 +13,7 @@ import lombok.Data;
  * @author John Grimes
  */
 @Data
-public class WhereClause {
+public class WhereElement {
 
   /**
    * The FHIRPath expression for the filter.

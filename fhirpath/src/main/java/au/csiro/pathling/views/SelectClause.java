@@ -1,8 +1,8 @@
 package au.csiro.pathling.views;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Defines the content of a column within the view.
@@ -17,8 +17,11 @@ public abstract class SelectClause implements SelectionElement {
   abstract String getPath();
 
   @Nonnull
-  abstract List<Column> getColumn();
+  abstract List<ColumnElement> getColumn();
 
   @Nonnull
   abstract List<SelectClause> getSelect();
+
+  @Nonnull
+  abstract List<SelectClause> getUnionAll();
 }

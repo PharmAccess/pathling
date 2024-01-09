@@ -29,6 +29,9 @@ public interface ProjectionContext {
   @Nonnull
   Dataset<Row> getDataset();
 
+  @Nonnull 
+  Collection getInputContext();
+  
   @Nonnull
   default DatasetResult<CollectionResult> evaluate(@Nonnull final Selection selection) {
     return selection.evaluate(this);

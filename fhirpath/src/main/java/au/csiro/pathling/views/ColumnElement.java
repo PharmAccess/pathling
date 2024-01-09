@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Column implements SelectionElement {
+public class ColumnElement implements SelectionElement {
 
   /**
    * Name of the column produced in the output, must be in a database-friendly format.

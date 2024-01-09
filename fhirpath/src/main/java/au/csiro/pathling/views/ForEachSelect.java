@@ -30,7 +30,7 @@ public class ForEachSelect extends SelectClause {
   String path;
 
   @NotNull
-  List<Column> column = Collections.emptyList();
+  List<ColumnElement> column = Collections.emptyList();
 
   /**
    * Nested select relative to the {@link #path}.
@@ -41,5 +41,10 @@ public class ForEachSelect extends SelectClause {
   @NotNull
   @Size()
   List<SelectClause> select = Collections.emptyList();
+
+
+  @NotNull
+  @Size()
+  List<SelectClause> unionAll = Collections.emptyList();
 
 }
