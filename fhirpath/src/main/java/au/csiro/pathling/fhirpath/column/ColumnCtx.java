@@ -130,6 +130,13 @@ public abstract class ColumnCtx {
         c -> arrayExpression.apply(functions.when(c.isNotNull(), functions.array(c))));
   }
 
+
+  @Nonnull
+  public ColumnCtx ifNotNull(@Nonnull final ColumnCtx nonNull) {
+    return copyOf(functions.when(nonNull.getValue().isNotNull(), getValue()));
+  }
+
+
   @Nonnull
   public ColumnCtx orElse(@Nonnull final Object value) {
     return copyOf(functions.coalesce(getValue(), functions.lit(value)));

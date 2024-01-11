@@ -19,8 +19,6 @@ package au.csiro.pathling.fhirpath.path;
 
 import au.csiro.pathling.encoders.terminology.ucum.Ucum;
 import au.csiro.pathling.errors.InvalidUserInputError;
-import au.csiro.pathling.fhirpath.FhirPath;
-import au.csiro.pathling.fhirpath.PathEvalContext;
 import au.csiro.pathling.fhirpath.collection.BooleanCollection;
 import au.csiro.pathling.fhirpath.collection.CodingCollection;
 import au.csiro.pathling.fhirpath.collection.Collection;
@@ -37,11 +35,11 @@ public final class Literals {
 
 
   @Value
-  public static class NullLiteral implements FhirPath {
+  public static class NullLiteral implements LeafPath {
 
+    @Nonnull
     @Override
-    public Collection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public Collection evalValue() {
       return Collection.nullCollection();
     }
 
@@ -53,14 +51,14 @@ public final class Literals {
   }
 
   @Value
-  public static class StringLiteral implements FhirPath {
+  public static class StringLiteral implements LeafPath {
 
     @Nonnull
     String value;
 
+    @Nonnull
     @Override
-    public StringCollection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public StringCollection evalValue() {
       return StringCollection.fromLiteral(value);
     }
 
@@ -73,14 +71,14 @@ public final class Literals {
   }
 
   @Value
-  public static class BooleanLiteral implements FhirPath {
+  public static class BooleanLiteral implements LeafPath {
 
     @Nonnull
     String value;
 
+    @Nonnull
     @Override
-    public BooleanCollection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public BooleanCollection evalValue() {
       return BooleanCollection.fromLiteral(value);
     }
 
@@ -92,14 +90,14 @@ public final class Literals {
   }
 
   @Value
-  public static class CodingLiteral implements FhirPath {
+  public static class CodingLiteral implements LeafPath {
 
     @Nonnull
     String value;
 
+    @Nonnull
     @Override
-    public CodingCollection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public CodingCollection evalValue() {
       try {
         return CodingCollection.fromLiteral(value);
       } catch (final IllegalArgumentException e) {
@@ -115,14 +113,14 @@ public final class Literals {
   }
 
   @Value
-  public static class CalendarDurationLiteral implements FhirPath {
+  public static class CalendarDurationLiteral implements LeafPath {
 
     @Nonnull
     String value;
 
+    @Nonnull
     @Override
-    public QuantityCollection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public QuantityCollection evalValue() {
       return QuantityCollection.fromCalendarDurationString(value);
     }
 
@@ -134,14 +132,14 @@ public final class Literals {
   }
 
   @Value
-  public static class UcumQuantityLiteral implements FhirPath {
+  public static class UcumQuantityLiteral implements LeafPath {
 
     @Nonnull
     String value;
 
+    @Nonnull
     @Override
-    public QuantityCollection apply(@Nonnull final Collection input,
-        @Nonnull final PathEvalContext context) {
+    public QuantityCollection evalValue() {
       try {
         return QuantityCollection.fromUcumString(value, Ucum.service());
       } catch (final UcumException e) {
