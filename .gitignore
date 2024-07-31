@@ -23,7 +23,7 @@ lib/js/node_modules/
 #Python
 __pycache__/
 *.egg-info
-_version.py
+# _version.py
 .ipynb_checkpoints/
 
 metastore_db
