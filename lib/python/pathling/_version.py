@@ -1,2 +1,5 @@
 __version__ = "7.0.3"
-__java_version__ = "17"
+__java_version__ = "3.3.4"
+__scala_version__ = "2.12"
+__delta_version__ = "3.2.0"
+__hadoop_version__= "3.3.4"
